@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Product;
+use App\Comment;
 use Illuminate\Http\Request;
+use Auth;
 
-class ProductController extends Controller
+class CommentController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -22,8 +23,22 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all()->toArray();
-        return view('products.index', compact('products'));
+
+        //$comments = Comment::find(2)->User->name;
+
+        //var_dump($comments);
+        /*foreach ($comments as $comment) {
+        }*/
+
+/*
+        $hotels = Hotel::orderBy('id')->with('qualities')->get();
+        return View::make('hotels.index')->with(array('hotels' => $hotels));*/
+
+        //App\Book::with('author', 'publisher')->get();
+
+        //$comments = Comment::all()->toArray();
+        $comments = Comment::with('user')->get();
+        return view('comments.index', compact('comments'));
     }
     /**
      * Store a newly created resource in storage.
@@ -33,14 +48,18 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = $this->validate(request(), [
-            'name' => 'required',
-            'price' => 'required|numeric'
+        $this->validate(request(), [
+            'comment' => 'required',
         ]);
 
-        Product::create($product);
+        $comment = new Comment();
+        $comment->userid = Auth::user()->id;
+        $comment->comment =  $request->comment;
 
-        return back()->with('success', 'Product has been added');
+        //Comment::create($comment);
+        $comment->save();
+
+        return back()->with('success', 'Comment has been added');
     }
     /**
      * Show the form for creating a new resource.
@@ -49,7 +68,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        return view('comments.create');
     }
 
     /**
@@ -77,8 +96,8 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $product = Product::find($id);
-        return view('products.edit',compact('product','id'));
+        $comment = Comment::find($id);
+        return view('comments.edit',compact('comment','id'));
     }
 
     /**
@@ -97,15 +116,13 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $product = Product::find($id);
+        $comment = Comment::find($id);
         $this->validate(request(), [
-            'name' => 'required',
-            'price' => 'required|numeric'
+            'comment' => 'required',
         ]);
-        $product->name = $request->get('name');
-        $product->price = $request->get('price');
-        $product->save();
-        return redirect('products')->with('success','Product has been updated');
+        $comment->comment = $request->get('comment');
+        $comment->save();
+        return redirect('comments')->with('success','Comment has been updated');
     }
 
     /**
@@ -116,8 +133,8 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::find($id);
-        $product->delete();
-        return redirect('products')->with('success','Product has been  deleted');
+        $comment = Comment::find($id);
+        $comment->delete();
+        return redirect('comments')->with('success','Comment has been deleted');
     }
 }
