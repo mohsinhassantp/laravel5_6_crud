@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Comment;
 use Illuminate\Http\Request;
 use Auth;
@@ -16,6 +17,7 @@ class CommentController extends Controller
     {
         $this->middleware('auth');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -23,44 +25,32 @@ class CommentController extends Controller
      */
     public function index()
     {
-
-        //$comments = Comment::find(2)->User->name;
-
-        //var_dump($comments);
-        /*foreach ($comments as $comment) {
-        }*/
-
-/*
-        $hotels = Hotel::orderBy('id')->with('qualities')->get();
-        return View::make('hotels.index')->with(array('hotels' => $hotels));*/
-
-        //App\Book::with('author', 'publisher')->get();
-
-        //$comments = Comment::all()->toArray();
         $comments = Comment::with('user')->get();
         return view('comments.index', compact('comments'));
     }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $this->validate(request(), [
-            'comment' => 'required',
+            'description' => 'required',
         ]);
 
         $comment = new Comment();
-        $comment->userid = Auth::user()->id;
-        $comment->comment =  $request->comment;
+        $comment->author = Auth::user()->id;
+        $comment->description = $request->description;
 
         //Comment::create($comment);
         $comment->save();
 
         return back()->with('success', 'Comment has been added');
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -74,7 +64,7 @@ class CommentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -82,59 +72,47 @@ class CommentController extends Controller
         //
     }
 
+
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
         $comment = Comment::find($id);
-        return view('comments.edit',compact('comment','id'));
+        return view('comments.edit', compact('comment', 'id'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         $comment = Comment::find($id);
         $this->validate(request(), [
-            'comment' => 'required',
+            'description' => 'required',
         ]);
-        $comment->comment = $request->get('comment');
+        $comment->description = $request->get('description');
         $comment->save();
-        return redirect('comments')->with('success','Comment has been updated');
+        return redirect('comments')->with('success', 'Comment has been updated');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         $comment = Comment::find($id);
         $comment->delete();
-        return redirect('comments')->with('success','Comment has been deleted');
+        return redirect('comments')->with('success', 'Comment has been deleted');
     }
 }

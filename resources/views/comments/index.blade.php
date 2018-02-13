@@ -32,7 +32,7 @@
             <tr>
                 <td>{{$comment['id']}}</td>
                 <td>{{$comment->user->name}}</td>
-                <td>{{$comment['comment']}}</td>
+                <td>{{$comment['description']}}</td>
                 <td><a href="{{action('CommentController@edit', $comment['id'])}}" class="btn btn-warning">Edit</a></td>
                 <td>
                     <form action="{{action('CommentController@destroy', $comment['id'])}}" method="post">

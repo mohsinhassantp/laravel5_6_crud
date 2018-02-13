@@ -5,7 +5,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Laravel 5.5 CRUD Tutorial With Example From Scratch </title>
+    <title>Laravel 5.5 CRUD</title>
     <link rel="stylesheet" href="{{asset('css/app.css')}}">
 </head>
 <body>
@@ -28,7 +28,7 @@
             <div class="col-md-4"></div>
             <div class="form-group col-md-4">
                 <label for="name">Comment:</label>
-                <input type="text" class="form-control" name="comment">
+                <input type="text" class="form-control" name="description">
             </div>
         </div>
 </div>
@@ -42,4 +42,4 @@
 </div>
 </body>
 </html>
-@endsection('content')
+@endsection
